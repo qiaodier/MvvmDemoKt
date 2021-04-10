@@ -1,6 +1,8 @@
 package com.mvvm.kt.mvvm.view
 
+import android.os.Build
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.mvvm.kt.R
@@ -60,6 +62,10 @@ class LoginActivity : BaseActivity<LoginViewModel>(), LoginView {
                 }
             })
         }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            ms.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+        ms.setProgress(0)
     }
 
     private fun getDataBinding(): ActivityMainBinding {

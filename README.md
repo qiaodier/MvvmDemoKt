@@ -5,4 +5,3 @@
  - RxJava+RxAndroid
  - Gson
  - LiveData
- -
