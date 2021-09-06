@@ -9,21 +9,20 @@ import java.util.*
  *@date 21-4-2 上午10:24
  *@desc 继承ViewModel来实现LiveData双向数据绑定
  */
-abstract class IViewModel<M:IBaseModel,V: IBaseView>(model: M?):ViewModel() {
+abstract class IViewModel:ViewModel() {
 
-    var mModel:M?=null
-    var mView:WeakReference<V>?=null
+
+    var mView:WeakReference<in IBaseView>?=null
 
     init {
-        mModel=model
     }
 
 
     /**
      * 绑定视图
      */
-    fun attachView(view:V?){
-        this.mView=WeakReference<V>(view)
+    fun attachView(view:IBaseView?){
+        this.mView=WeakReference<IBaseView>(view)
     }
 
     /**
@@ -35,18 +34,11 @@ abstract class IViewModel<M:IBaseModel,V: IBaseView>(model: M?):ViewModel() {
         }
     }
 
-    /**
-     * 获取视图
-     */
-    fun getView(): V? {
-        return mView?.get()
-    }
 
     /**
      * 释放资源
      */
     fun releaseViewModel(){
-        mModel=null
     }
 
 

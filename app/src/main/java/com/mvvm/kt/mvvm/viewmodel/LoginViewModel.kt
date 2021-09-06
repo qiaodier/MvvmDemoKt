@@ -14,6 +14,7 @@ import com.mvvm.kt.entity.LoginResp
 import com.mvvm.kt.entity.NewsResponse
 import com.mvvm.kt.http.rx.BaseObserver
 import com.mvvm.kt.mvvm.model.LoginModel
+import com.mvvm.kt.mvvm.view.LoginView
 import com.mvvm.kt.utils.HttpRequestUtils
 
 /**
@@ -21,28 +22,33 @@ import com.mvvm.kt.utils.HttpRequestUtils
  *@date 21-4-2 上午9:45
  *@desc view层 和 数据层的中间桥梁
  */
-class LoginViewModel constructor(model: LoginModel) : IViewModel<IBaseModel, IBaseView>(model) {
+class LoginViewModel constructor(private val model: LoginModel,private val view:LoginView) : IViewModel() {
+
+    init {
+
+    }
 
     var userName = MutableLiveData<String>()
     var userPwd = MutableLiveData<String>()
+
 
     fun realLogin() {
         Log.e("LoginViewModel-realLogin", "${userName.value}  ${userPwd.value}")
         val login = Login(userName.value,userPwd.value)
         HttpRequestUtils
-            .applyScheduler((mModel as LoginModel).loginRx(login), mView?.get())
-            ?.subscribe(object : BaseObserver<LoginResp>(mView?.get()) {
+            .applyScheduler(model.loginRx(login), view)
+            ?.subscribe(object : BaseObserver<LoginResp>(view) {
                 override fun onSuccess(t: LoginResp) {
                     // 因为基类已经判断是否ok 此处不用做状态码的判断
-                    mView?.get()?.requestSuccess()
+                    view.requestSuccess()
                 }
 
                 override fun onFailure(errorMsg: String) {
-                    mView?.get()?.requestFail(errorMsg)
+                    view.requestFail(errorMsg)
                 }
 
                 override fun onComplete() {
-                    mView?.get()?.requestComplete()
+                    view.requestComplete()
                 }
             })
     }
@@ -52,16 +58,16 @@ class LoginViewModel constructor(model: LoginModel) : IViewModel<IBaseModel, IBa
      * 获取新闻列表的网络请求
      */
     fun getNews(url: String):LiveData<NewsResponse>{
-        return (mModel as LoginModel).newsLiveData(url)
+        return model.newsLiveData(url)
     }
 
     /**
      *
-     * 自定义factory
+     * 自定义factory viewModel 构造器传参用
      */
-    class LoginViewModelFactory(private val model: LoginModel) : ViewModelProvider.Factory {
+    class LoginViewModelFactory(private val model: LoginModel,private val view:LoginView) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return LoginViewModel(model) as T
+            return LoginViewModel(model,view) as T
         }
     }
 

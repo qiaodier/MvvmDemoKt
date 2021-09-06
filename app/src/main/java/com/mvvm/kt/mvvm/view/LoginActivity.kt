@@ -33,7 +33,7 @@ class LoginActivity : BaseActivity<LoginViewModel>(), LoginView {
     override fun iniViewModel(): LoginViewModel {
         //使用有参数的构造器初始化继承了ViewModel 的 业务viewmodel
         val factory: LoginViewModel.LoginViewModelFactory =
-            LoginViewModel.LoginViewModelFactory(LoginModel())
+            LoginViewModel.LoginViewModelFactory(LoginModel(),this)
         return ViewModelProvider(this, factory).get(LoginViewModel::class.java)
         //使用无参数的构造器初始化viewmodel
 //        return ViewModelProvider(this,ViewModelProvider.AndroidViewModelFactory(this.application)).get(LoginViewModel::class.java)
@@ -44,7 +44,6 @@ class LoginActivity : BaseActivity<LoginViewModel>(), LoginView {
 //        val login = Login("name", "qwertyuiop")
 //        getDataBinding().setVariable(BR.login, login)
         getDataBinding().loginViewModel = mViewModel
-        getDataBinding().lifecycleOwner = this
         button.setOnClickListener {
             // 使用anko库获取页面控件的内容，并拼装Login
 //            toast("${editTextTextPersonName.text} ${editTextTextPersonName3.text}")
@@ -68,7 +67,5 @@ class LoginActivity : BaseActivity<LoginViewModel>(), LoginView {
         ms.setProgress(0)
     }
 
-    private fun getDataBinding(): ActivityMainBinding {
-        return mDataBinding as ActivityMainBinding
-    }
+
 }

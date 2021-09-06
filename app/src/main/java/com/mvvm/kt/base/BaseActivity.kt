@@ -8,6 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
+import com.mvvm.kt.databinding.ActivityMainBinding
 import com.trello.rxlifecycle3.components.support.RxAppCompatActivity
 import org.jetbrains.anko.toast
 
@@ -16,7 +17,7 @@ import org.jetbrains.anko.toast
  *@date 21-4-2 上午9:59
  *@desc baseActivity Activity的基类
  */
-abstract class BaseActivity<T : IViewModel<IBaseModel,IBaseView>> :
+abstract class BaseActivity<T : IViewModel> :
     RxAppCompatActivity(), LifecycleObserver,
     IBaseView {
 
@@ -43,9 +44,12 @@ abstract class BaseActivity<T : IViewModel<IBaseModel,IBaseView>> :
         mDataBinding = DataBindingUtil.setContentView(this,layoutResID())
         lifecycle.addObserver(this)
         mViewModel = iniViewModel()
-        mViewModel?.attachView(this)
+        getDataBinding().lifecycleOwner = this
         initViews()
+    }
 
+    fun getDataBinding(): ActivityMainBinding {
+        return mDataBinding as ActivityMainBinding
     }
 
 
